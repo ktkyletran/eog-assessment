@@ -12,6 +12,7 @@ import HeartBeat from './Features/HeartBeat/HeartBeat';
 import Metrics from './Features/Metrics/Metrics';
 import Subscription from './Features/Subscription/Subscription';
 import Measurements from './Features/Measurements/Measurements';
+import Chart from './components/Chart';
 
 const store = createStore();
 const theme = createTheme({
@@ -38,6 +39,7 @@ const App = () => (
         <Subscription />
         <Measurements />
         <Metrics />
+        <Chart />
         {/* <NowWhat /> */}
         <ToastContainer />
       </Wrapper>
