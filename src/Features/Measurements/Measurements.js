@@ -39,7 +39,7 @@ const Measurements = () => {
     return {
       metricName: metric,
       before: heartBeat,
-      after: heartBeat - 180000
+      after: heartBeat - 1800000
     }
   })
   const [results] = useQuery({
@@ -50,6 +50,7 @@ const Measurements = () => {
   });
 
   const { fetching, data, error } = results;
+
   useEffect(() => {
     if (error) {
       console.log(error.message)
