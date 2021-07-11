@@ -11,6 +11,10 @@ const useStyles = makeStyles({
     textAlign: 'center',
     margin: '1% auto'
   },
+  message: {
+    fontSize: '50px',
+    margin: '15% auto',
+  }
 });
 
 const Chart = () => {
@@ -55,6 +59,39 @@ const Chart = () => {
     }
     else if (metric === 'tubingPressure') {
       return "purple"
+    }
+  };
+
+  const renderChart = () => {
+    if (chartData.length > 0) {
+      return (
+        <LineChart data={chartData}>
+        <Legend align="right" verticalAlign="top"/>
+        <CartesianGrid strokeDasharray="6 6" />
+        <XAxis type='number' tickFormatter={xAxisFormatter} dataKey="at" allowDuplicatedCategory={true} domain={['dataMin', 'dataMax']} />
+        <YAxis />
+        <Tooltip />
+        {/* <Legend /> */}
+        {chartData.map(((metric) => {  
+          return (
+            <Line
+              name={metric.metric}
+              data={metric.measurements}
+              key={metric.metric}
+              unit={" " + metric.measurements[0].unit}
+              type="linear"
+              dataKey="value"
+              stroke={assignColor(metric.metric)}
+              dot={false}
+              />
+          )
+        }))}
+      </LineChart>
+      )
+    } else {
+      return (
+        <h1 className={classes.message}>Select a metric to get started</h1>
+      )
     }
   }
   
@@ -146,28 +183,7 @@ const Chart = () => {
         })}
       </Grid>
       <ResponsiveContainer height="65%" width="65%" className={classes.div}>
-      <LineChart data={chartData}>
-          <Legend align="right" verticalAlign="top"/>
-          <CartesianGrid strokeDasharray="6 6" />
-          <XAxis type='number' tickFormatter={xAxisFormatter} dataKey="at" allowDuplicatedCategory={true} domain={['dataMin', 'dataMax']} />
-          <YAxis />
-          <Tooltip />
-          {/* <Legend /> */}
-          {chartData.map(((metric) => {  
-            return (
-              <Line
-                name={metric.metric}
-                data={metric.measurements}
-                key={metric.metric}
-                unit={" " + metric.measurements[0].unit}
-                type="linear"
-                dataKey="value"
-                stroke={assignColor(metric.metric)}
-                dot={false}
-                />
-            )
-          }))}
-        </LineChart>
+        {renderChart()}
       </ResponsiveContainer>
     </>
   )
