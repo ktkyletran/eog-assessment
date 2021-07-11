@@ -30,7 +30,7 @@ export default () => {
 const useStyles = makeStyles({
   div: {
     textAlign: 'center',
-    margin: '0 auto'
+    margin: '0 auto',
   },
 });
 
@@ -50,18 +50,18 @@ const Metrics = () => {
   });
 
   const handleChange = name => event => {
-    const addMetric = event.target.value;
+    const metric = event.target.value;
     const isActive = event.target.checked;
     setButtonState({ ...buttonState, [name]: event.target.checked });
 
     if (isActive) {
       dispatch(
         actions.activeMetrics({
-          metricName: addMetric,
+          metricName: metric,
         }),
       );
     } else {
-      const metricIndex = activeMets.find(element => element.metricName === addMetric);
+      const metricIndex = activeMets.find(element => element.metricName === metric);
       dispatch(actions.removeMetrics(metricIndex.metricName));
     }
   };
