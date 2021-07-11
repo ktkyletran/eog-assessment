@@ -88,7 +88,7 @@ const Metrics = () => {
   
   return (
     <div className={classes.div}>
-      <h1 className="center">Select Metric(s):</h1>
+      <h1 className="center">Metric(s):</h1>
       <FormControl component="fieldset">
         <FormGroup aria-label="position" row>
 
