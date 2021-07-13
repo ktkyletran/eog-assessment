@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
@@ -19,10 +19,19 @@ const useStyles = makeStyles({
 
 const Chart = () => {
   const classes = useStyles();
+  
+  // Redux State
   const subData = useSelector(state => state.subscription.subData);
+  const injValveOpen = useSelector(state => state.subscription.injValveOpen);
+  const oilTemp = useSelector(state => state.subscription.oilTemp);
+  const waterTemp = useSelector(state => state.subscription.waterTemp);
+  const flareTemp = useSelector(state => state.subscription.flareTemp);
+  const casingPressure = useSelector(state => state.subscription.casingPressure);
+  const tubingPressure = useSelector(state => state.subscription.tubingPressure);
   const activeMets = useSelector(state => state.metrics.activeMetrics);
   const measurementData = useSelector(state => state.measurements.measurements);
-
+  
+  // Filters data based on active metrics
   const dataFilter = data => {
     for (let i = 0; i < activeMets.length; i++) {
       if (data.metric === activeMets[i].metricName) {
@@ -30,59 +39,86 @@ const Chart = () => {
       };
     };
   };
-  
+
   const chartData = measurementData.filter(dataFilter)
-  
+
+  // Formats ticks on x axis
   let xAxisFormatter = heartbeat => {
     const start = moment.unix(heartbeat);
-    const remainder = 60 - (start.minute() % 60);
+    const remainder = 5 - (start.minute() % 5);
 
     return moment.unix(heartbeat).add(remainder, "minutes").format('h:mmA');
-    // return moment.unix(heartbeat).format('h:mmA');
   };
 
+  // Assigns color to chart lines
   const assignColor = metric => {
-    if (metric === 'injValveOpen') {
-      return "red"
-    }
-    else if (metric === 'oilTemp') {
-      return "blue"
-    }
-    else if (metric === 'waterTemp') {
-      return "orange"
-    }
-    else if (metric === 'flareTemp') {
-      return "green"
-    }
-    else if (metric === 'casingPressure') {
-      return "hotpink"
-    }
-    else if (metric === 'tubingPressure') {
-      return "purple"
+    switch (metric) {
+      case 'injValveOpen':
+        return "red"
+      case 'oilTemp':
+        return "blue"
+      case 'waterTemp':
+        return "orange"
+      case 'flareTemp':
+        return "green"
+      case 'casingPressure':
+        return "hotpink"
+      case 'tubingPressure':
+        return "purple"
+      default:
+        return null;
     }
   };
 
+  // Concats live data with historical data
+  const joinData = (data, metricName) => {
+    switch (metricName) {
+      case 'injValveOpen':
+        return data.concat(injValveOpen)
+      case 'oilTemp':
+        return data.concat(oilTemp)
+      case 'waterTemp':
+        return data.concat(waterTemp)
+      case 'flareTemp':
+        return data.concat(flareTemp)
+      case 'casingPressure':
+        return data.concat(casingPressure)
+      case 'tubingPressure':
+        return data.concat(tubingPressure)
+      default:
+        return null;
+    }
+  };
+
+  useEffect(() => {
+    
+  }, [])
+
+  // Conditional rendering for chart
   const renderChart = () => {
     if (chartData.length > 0) {
       return (
-        <LineChart data={chartData}>
+        <LineChart>
         <Legend align="right" verticalAlign="top"/>
         <CartesianGrid strokeDasharray="6 6" />
-        <XAxis type='number' tickFormatter={xAxisFormatter} dataKey="at" allowDuplicatedCategory={true} domain={['dataMin', 'dataMax']} />
+        <XAxis type='number' tickFormatter={xAxisFormatter} dataKey="at" allowDuplicatedCategory={false} domain={['dataMin', 'dataMax']}/>
         <YAxis />
         <Tooltip />
         {/* <Legend /> */}
-        {chartData.map(((metric) => {  
+        {chartData.map(((metric) => {
+          console.log(metric.measurements.concat(oilTemp))  
           return (
             <Line
               name={metric.metric}
-              data={metric.measurements}
+              data={joinData(metric.measurements, metric.metric)}
               key={metric.metric}
               unit={" " + metric.measurements[0].unit}
               type="linear"
               dataKey="value"
               stroke={assignColor(metric.metric)}
               dot={false}
+              activeDot={false}
+              isAnimationActive={false}
               />
           )
         }))}
