@@ -39,7 +39,7 @@ const Measurements = () => {
     return {
       metricName: metric,
       before: heartBeat,
-      after: heartBeat - 1800000
+      after: heartBeat - 650000 // selects 500 results
     }
   })
   const [results] = useQuery({
@@ -57,9 +57,9 @@ const Measurements = () => {
       return;
     }
     if (!data) return;
-    
-  const { getMultipleMeasurements } = data;
-  dispatch(actions.measurements(getMultipleMeasurements))
+
+    const { getMultipleMeasurements } = data;
+    dispatch(actions.measurements(getMultipleMeasurements))
 
   }, [data, dispatch, error])
   
