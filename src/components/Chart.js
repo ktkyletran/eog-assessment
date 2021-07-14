@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
@@ -12,7 +12,7 @@ const useStyles = makeStyles({
     margin: '1% auto'
   },
   message: {
-    fontSize: '50px',
+    fontSize: '35px',
     margin: '15% auto',
   }
 });
@@ -90,10 +90,6 @@ const Chart = () => {
     }
   };
 
-  useEffect(() => {
-    
-  }, [])
-
   // Conditional rendering for chart
   const renderChart = () => {
     if (chartData.length > 0) {
@@ -101,12 +97,11 @@ const Chart = () => {
         <LineChart>
         <Legend align="right" verticalAlign="top"/>
         <CartesianGrid strokeDasharray="6 6" />
-        <XAxis type='number' tickFormatter={xAxisFormatter} dataKey="at" allowDuplicatedCategory={false} domain={['dataMin', 'dataMax']}/>
-        <YAxis />
+        <XAxis type='number' tickFormatter={xAxisFormatter} dataKey="at" allowDuplicatedCategory={false} domain={['dataMin', 'dataMax']} tickMargin={5}/>
+        <YAxis/>
         <Tooltip />
         {/* <Legend /> */}
         {chartData.map(((metric) => {
-          console.log(metric.measurements.concat(oilTemp))  
           return (
             <Line
               name={metric.metric}
